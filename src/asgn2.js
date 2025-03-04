@@ -116,7 +116,7 @@ function addActionForHtmlUI(){
   document.getElementById("greenSlide").addEventListener("mouseup", function() {g_selectedColor[1] = this.value/100;});
   document.getElementById("blueSlide").addEventListener("mouseup", function() {g_selectedColor[2] = this.value/100;});
 
-  document.getElementById("angleSlide").addEventListener("mouseup", function() {g_globalAngle = this.value; renderAllShapes(); });
+  document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
 }
 
 function main() {
@@ -176,14 +176,11 @@ function renderAllShapes(){
   var globalRotMat  = new Matrix4().rotate(g_globalAngle,0,1,0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
   
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
   gl.enable(gl.CULL_FACE);
-  gl.cullFace(gl.BACK);
-  
-  var body = new Cube();
-  body.color = [0.0,1.0,0.0,1.0];
-  body.render();
+  gl.cullFace(gl.FRONT);
+  gl.enable(gl.DEPTH_TEST);
   
   var body = new Cube();
   body.color = [0.0,0.0,1.0,1.0];
