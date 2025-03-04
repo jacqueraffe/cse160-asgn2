@@ -179,7 +179,7 @@ function renderAllShapes(){
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
   gl.enable(gl.CULL_FACE);
-  gl.cullFace(gl.FRONT);
+  gl.cullFace(gl.BACK);
   gl.enable(gl.DEPTH_TEST);
   
   var body = new Cube();
