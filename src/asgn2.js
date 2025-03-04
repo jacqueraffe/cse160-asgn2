@@ -102,11 +102,18 @@ function main() {
   setupWebGL();
   connectVariablesToGLSL();
   addActionForHtmlUI();
-
-  // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  requestAnimationFrame(tick);
+}
 
+var g_startTime = performance.now()/1000.0;
+var g_seconds = performance.now()/1000.0-g_startTime;
+
+function tick() {
+  g_seconds = performance.now()/1000.0-g_startTime;
+  console.log(g_seconds);
   renderAllShapes();
+  requestAnimationFrame(tick);
 }
 
 
@@ -136,6 +143,7 @@ leftArm.color = [1, 1, 0, 1];
 leftArm.matrix.setTranslate(0, -0.5, 0.0);
 leftArm.matrix.rotate(-5, 1, 0, 0);
 leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);
+leftArm.matrix.rotate(45*Math.sin(g_seconds), 0, 0, 1);
 var yellowCoordMat = new Matrix4(leftArm.matrix);
 leftArm.matrix.scale(0.25, 0.7, 0.5);
 leftArm.matrix.translate(-0.5, 0, 0);
