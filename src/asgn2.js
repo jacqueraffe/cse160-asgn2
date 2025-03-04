@@ -89,10 +89,12 @@ function connectVariablesToGLSL(){
 
 let g_globalAngle = 0;
 let g_yellowAngle = 0;
+let g_magentaAngle = 0;
 
 function addActionForHtmlUI(){
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
   document.getElementById("yellowSlide").addEventListener("mousemove", function() {g_yellowAngle = this.value; renderAllShapes(); });
+  document.getElementById("magentaSlide").addEventListener("mousemove", function() {g_magentaAngle = this.value; renderAllShapes(); });
 
 }
 
@@ -133,16 +135,19 @@ var leftArm = new Cube();
 leftArm.color = [1, 1, 0, 1];
 leftArm.matrix.setTranslate(0, -0.5, 0.0);
 leftArm.matrix.rotate(-5, 1, 0, 0);
-leftArm.matrix.rotate(g_yellowAngle, 0, 0, 1);
+leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);
+var yellowCoordMat = new Matrix4(leftArm.matrix);
 leftArm.matrix.scale(0.25, 0.7, 0.5);
 leftArm.matrix.translate(-0.5, 0, 0);
 leftArm.render();
 
 var box = new Cube();
 box.color = [1, 0, 1, 1];
-box.matrix.translate(-0.1, 0.1, 0, 0);
-box.matrix.rotate(-30, 1, 0, 0);
-box.matrix.scale(0.2, 0.4, 0.2);
+box.matrix = yellowCoordMat;
+box.matrix.translate(0,0.65,0);
+box.matrix.rotate(g_magentaAngle, 0, 0, 1);
+box.matrix.scale(0.3, 0.3, 0.3);
+box.matrix.translate(-0.5,0,-0.00001);
 box.render();
 
   
