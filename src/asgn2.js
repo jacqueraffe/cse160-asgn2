@@ -96,8 +96,6 @@ function addActionForHtmlUI(){
   
   document.getElementById('pointButton').onclick = function() {g_selectedType = POINT;};
   document.getElementById('triangleButton').onclick = function() {g_selectedType = TRIANGLE;};
-  document.getElementById('grassButton').onclick = function() {g_selectedType = GRASS;};
-  document.getElementById('flowerButton').onclick = function() {g_selectedType = FLOWER;};
   
   document.getElementById('circleButton').onclick = function() {g_selectedType = CIRCLE;};
   document.getElementById('segmentsSlide').addEventListener('mouseup', function() { g_segments = this.value; });
@@ -121,8 +119,7 @@ function main() {
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  // Clear <canvas>
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  renderAllShapes();
 }
 
 
@@ -138,10 +135,6 @@ function click(ev) {
     point = new Point();
   } else if (g_selectedType == TRIANGLE){
     point = new Triangle();
-  } else if (g_selectedType == GRASS){
-    point = new Grass();
-  } else if (g_selectedType == FLOWER){
-    point = new Flower();
   } else if (g_selectedType == CIRCLE){
     point = new Circle();
   }
@@ -166,67 +159,23 @@ function convertCoordinatesEventToGL(ev){
 
 function renderAllShapes(){
   // Clear <canvas>
+  var startTime = performance.now();
   gl.clear(gl.COLOR_BUFFER_BIT);
-
-  var len = g_shapesList.length;
-  for(var i = 0; i < len; i++) {
-    g_shapesList[i].render();
-  }
+  
+  drawTriangle3D([-1.0,0.0,0.0, -0.5,-1.0,0.0, 0.0,0.0,0.0])
+  var body = new Cube();
+  body.color = [1.0,0.0,0.0,1.0];
+  body.render();
+  
+  var duration = performance.now() - startTime;
+  sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration));
 }
 
-// step 12
-document.getElementById('drawingButton').onclick = function() {
-
-  for (var i = 0; i< 100000; i++){
-    gl.vertexAttrib3f(a_Position, Math.random(), Math.random(), 0.0);
-    gl.uniform4f(u_FragColor, Math.random(), 1.0, Math.random(), 1.0);
-    gl.uniform1f(u_Size, 2.0);
-    gl.drawArrays(gl.POINTS, 0, 1);
-    
-    gl.vertexAttrib3f(a_Position, -Math.random(), Math.random(), 0.0);
-    gl.uniform4f(u_FragColor, Math.random(), 1.0, Math.random(), 1.0);
-    gl.uniform1f(u_Size, 2.0);
-    gl.drawArrays(gl.POINTS, 0, 1);
-    
-    gl.vertexAttrib3f(a_Position, Math.random(), -Math.random(), 0.0);
-    gl.uniform4f(u_FragColor, Math.random(), 1.0, Math.random(), 1.0);
-    gl.uniform1f(u_Size, 2.0);
-    gl.drawArrays(gl.POINTS, 0, 1);
-    
-    gl.vertexAttrib3f(a_Position, -Math.random(), -Math.random(), 0.0);
-    gl.uniform4f(u_FragColor, Math.random(), 1.0, Math.random(), 1.0);
-    gl.uniform1f(u_Size, 2.0);
-    gl.drawArrays(gl.POINTS, 0, 1);
+function sendTextToHTML(text, htmlID){
+  var htmlElm = document.getElementById(htmlID);
+  if(!htmlElm){
+    console.log("failed to get " + htmlID + " from HTML");
+    return;
   }
-  for (var i = 0; i< 50; i++){
-    const poppy1 = new Flower();
-    poppy1.position = [Math.random(), Math.random()];
-    poppy1.color = [1.0, 0.0, 0.0, 1.0];
-    poppy1.size = 10;
-    poppy1.segments = 32;
-    g_shapesList.push(poppy1);
-    const poppy2 = new Flower();
-    poppy2.position = [-Math.random(), Math.random()];
-    poppy2.color = [1.0, 0.0, 0.0, 1.0];
-    poppy2.size = 10;
-    poppy2.segments = 32;
-    g_shapesList.push(poppy2);
-    const poppy3 = new Flower();
-    poppy3.position = [Math.random(), -Math.random()];
-    poppy3.color = [1.0, 0.0, 0.0, 1.0];
-    poppy3.size = 10;
-    poppy3.segments = 32;
-    g_shapesList.push(poppy3);
-    const poppy4 = new Flower();
-    poppy4.position = [-Math.random(), -Math.random()];
-    poppy4.color = [1.0, 0.0, 0.0, 1.0];
-    poppy4.size = 10;
-    poppy4.segments = 32;
-    g_shapesList.push(poppy4);
-  }
-
-  var len = g_shapesList.length;
-    for(var i = 0; i < len; i++) {
-        g_shapesList[i].render();
-    }
-};
+  htmlElm.innerHTML = text;
+}
