@@ -163,7 +163,7 @@ leftArm.matrix.scale(0.25, 0.7, 0.5);
 leftArm.matrix.translate(-0.5, 0, 0);
 leftArm.render();
 
-var box = new Cube();
+var box = new Sphere(40,40);
 box.color = [1, 0, 1, 1];
 box.matrix = yellowCoordMat;
 box.matrix.translate(0,0.65,0);
