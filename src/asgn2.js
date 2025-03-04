@@ -141,37 +141,45 @@ function renderAllShapes(){
   gl.enable(gl.DEPTH_TEST);
   
   
+  var head = new Sphere(40,40);
+  head.color = [222/256, 184/256, 135/256, 1.0];
+  head.matrix.scale(0.2, 0.1, 0.1);
+  head.matrix.translate(-2, 2, 0, 2);
+  head.render();
+  
 var body = new Cube();
-body.color = [1.0, 0.0, 0.0, 1.0];
-body.matrix.translate(-0.25, -0.75, 0.0);
-body.matrix.rotate(-5, 1, 0, 0);
-body.matrix.scale(0.5, 0.3, 0.5);
+body.color = [222/256, 184/256, 135/256, 1.0];
+body.matrix.rotate(-10, 1, 15, 1);
+body.matrix.scale(0.5, 0.3, 0.3);
 body.render();
 
-var leftArm = new Cube();
-leftArm.color = [1, 1, 0, 1];
-leftArm.matrix.setTranslate(0, -0.5, 0.0);
-leftArm.matrix.rotate(-5, 1, 0, 0);
-// if (g_yellowAnimation){
-//   leftArm.matrix.rotate(45*Math.sin(g_seconds), 0, 0, 1);
-// } else{
-//   leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);
-// }
-leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);
-var yellowCoordMat = new Matrix4(leftArm.matrix);
-leftArm.matrix.scale(0.25, 0.7, 0.5);
-leftArm.matrix.translate(-0.5, 0, 0);
-leftArm.render();
+var frontLeftLeg = new Cube();
+frontLeftLeg.color = [222/256, 184/256, 135/256, 1.0];
+frontLeftLeg.matrix.rotate(-10, 1, 15, 1);
+frontLeftLeg.matrix.scale(0.05, 0.3, 0.05);
+frontLeftLeg.matrix.translate(0, -1.0, 0.0, 0);
+frontLeftLeg.render();
 
-var box = new Sphere(40,40);
-box.color = [1, 0, 1, 1];
-box.matrix = yellowCoordMat;
-box.matrix.translate(0,0.65,0);
-box.matrix.rotate(g_magentaAngle, 0, 0, 1);
-box.matrix.scale(0.3, 0.3, 0.3);
-box.matrix.translate(-0.5,0,-0.00001);
-box.render();
+var frontRightLeg = new Cube();
+frontRightLeg.color = [222/256, 184/256, 135/256, 1.0];
+frontRightLeg.matrix.rotate(-10, 1, 15, 1);
+frontRightLeg.matrix.scale(0.05, 0.3, 0.05);
+frontRightLeg.matrix.translate(0, -1.0, 5.0, 0);
+frontRightLeg.render();
+  
+var backLeftLeg = new Cube();
+backLeftLeg.color = [222/256, 184/256, 135/256, 1.0];
+backLeftLeg.matrix.rotate(-10, 1, 15, 1);
+backLeftLeg.matrix.scale(0.05, 0.3, 0.05);
+backLeftLeg.matrix.translate(9, -1.0, 0.0, 0);
+backLeftLeg.render();
 
+var backRightLeg = new Cube();
+backRightLeg.color = [222/256, 184/256, 135/256, 1.0];
+backRightLeg.matrix.rotate(-10, 1, 15, 1);
+backRightLeg.matrix.scale(0.05, 0.3, 0.05);
+backRightLeg.matrix.translate(9, -1.0, 5.0, 0);
+backRightLeg.render();
   
   var duration = performance.now() - startTime;
   sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");

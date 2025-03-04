@@ -9,11 +9,10 @@ Please write similar code to render a unit sphere. Include longitude and latitud
 */
 
 // additionally, asked it to turn the triangles counterclockwise and to do shading.
-
 class Sphere {
     constructor(longitudeBands, latitudeBands) {
         this.type = 'sphere';
-        this.color = [1.0, 1.0, 1.0, 1.0];
+        this.color = [1.0, 0.5, 0.0, 1.0]; // Example: Orange color, you can change it
         this.matrix = new Matrix4();
         this.longitudeBands = longitudeBands;
         this.latitudeBands = latitudeBands;
@@ -58,12 +57,12 @@ class Sphere {
                 let second = first + this.longitudeBands + 1;
 
                 indices.push(first);
-                indices.push(first + 1); // Swapped order for counter-clockwise
-                indices.push(second);      // Swapped order for counter-clockwise
+                indices.push(first + 1);
+                indices.push(second);
 
-                indices.push(first + 1); // Swapped order for counter-clockwise
+                indices.push(first + 1);
                 indices.push(second + 1);
-                indices.push(second);      // Swapped order for counter-clockwise
+                indices.push(second);
             }
         }
         this.indexedVertices = [];
@@ -88,10 +87,15 @@ class Sphere {
             let v2 = [this.indexedVertices[i+3], this.indexedVertices[i+4], this.indexedVertices[i+5]];
             let v3 = [this.indexedVertices[i+6], this.indexedVertices[i+7], this.indexedVertices[i+8]];
 
-            // Calculate face normal (for flat shading)
-            let normal = this.calculateFaceNormal(v1, v2, v3);
-            let shadingFactor = Math.max(0.0, normal[2]); // Simple shading based on Z component of normal
-            let rgba = this.color.map(c => c * shadingFactor);
+            // Calculate shading factor based on vertex X position (side to side)
+            let shadingFactor = (v2[1] + 1) / 2; // Map x from [-1, 1] to [0, 1]
+
+            // Calculate brighter color
+            let brighterColor = this.color.map(c => Math.min(c * 0.75, 1.0)); // Increased brightness factor to 1.8
+
+            // Interpolate between original color and brighter color
+            let rgba = this.color.map((originalC, index) => originalC + (brighterColor[index] - originalC) * shadingFactor);
+
 
             gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
             drawTriangle3D([
@@ -126,7 +130,7 @@ function crossProduct(v1, v2) {
 function normalizeVector(v) {
     let length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     if (length > 0) {
-        return [v[0] / length, v[1] / length, v[2] / length];
+        return [v[0] / length, v[1] / length];
     } else {
         return [0, 0, 0]; // Avoid division by zero
     }
