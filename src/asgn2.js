@@ -88,9 +88,12 @@ function connectVariablesToGLSL(){
 }
 
 let g_globalAngle = 0;
+let g_yellowAngle = 0;
 
 function addActionForHtmlUI(){
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
+  document.getElementById("yellowSlide").addEventListener("mousemove", function() {g_yellowAngle = this.value; renderAllShapes(); });
+
 }
 
 function main() {
@@ -130,7 +133,7 @@ var leftArm = new Cube();
 leftArm.color = [1, 1, 0, 1];
 leftArm.matrix.setTranslate(0, -0.5, 0.0);
 leftArm.matrix.rotate(-5, 1, 0, 0);
-leftArm.matrix.rotate(0, 0, 0, 1);
+leftArm.matrix.rotate(g_yellowAngle, 0, 0, 1);
 leftArm.matrix.scale(0.25, 0.7, 0.5);
 leftArm.matrix.translate(-0.5, 0, 0);
 leftArm.render();
