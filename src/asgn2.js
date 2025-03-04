@@ -181,16 +181,15 @@ function renderAllShapes(){
   gl.enable(gl.CULL_FACE);
   gl.cullFace(gl.BACK);
   
-  // drawTriangle3D([-1.0,0.0,0.0, -0.5,-1.0,0.0, 0.0,0.0,0.0])
-  // var body = new Cube();
-  // body.color = [0.0,1.0,0.0,1.0];
-  // body.render();
+  var body = new Cube();
+  body.color = [0.0,1.0,0.0,1.0];
+  body.render();
   
-  // var body = new Cube();
-  // body.color = [0.0,0.0,1.0,1.0];
-  // body.matrix.translate(-0.25, -0.5, 0.0);
-  // body.matrix.scale(0.5, 1, 0.5);
-  // body.render();
+  var body = new Cube();
+  body.color = [0.0,0.0,1.0,1.0];
+  body.matrix.translate(-0.25, -0.5, 0.0);
+  body.matrix.scale(0.5, 1, 0.5);
+  body.render();
   
   var leftArm = new Cube();
   leftArm.color = [1,1,0,1];
@@ -198,6 +197,14 @@ function renderAllShapes(){
   leftArm.matrix.rotate(45, 0, 0, 1);
   leftArm.matrix.scale(0.25, 0.7, 0.5);
   leftArm.render();
+  
+   
+  // var test = new Cube();
+  // test.color = [1,1,0,1];
+  // test.matrix.translate(0.8, 0.1, 0.1);
+  // test.matrix.rotate(45, 0, 0, 1);
+  // test.matrix.scale(0.25, 0.7, 0.5);
+  // test.render();
   
   var duration = performance.now() - startTime;
   sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
