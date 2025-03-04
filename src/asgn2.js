@@ -16,8 +16,9 @@
 var VSHADER_SOURCE =`
   attribute vec4 a_Position;
   uniform mat4 u_ModelMatrix;
+  uniform mat4 u_GlobalRotateMatrix;
   void main() {
-    gl_Position = u_ModelMatrix*a_Position;
+    gl_Position = u_GlobalRotateMatrix*u_ModelMatrix*a_Position;
   }`
 
 // Fragment shader program
@@ -34,6 +35,7 @@ let gl;
 let a_Position;
 let u_FragColor;
 let u_ModelMatrix;
+let u_GlobalRotateMatrix;
 
 function setupWebGL(){
     // Retrieve <canvas> element
@@ -74,6 +76,12 @@ function connectVariablesToGLSL(){
     return;
   }
   
+  u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix');
+  if (!u_GlobalRotateMatrix) {
+    console.log('Failed to get the storage location of u_GlobalRotateMatrix');
+    return;
+  }
+  
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
   
@@ -89,6 +97,7 @@ let g_selectedColor = [1.0,1.0,1.0,1.0];
 let g_selectedSize = 5;
 let g_selectedType = POINT;
 let g_segments = 10;
+let g_globalAngle = 0;
 
 function addActionForHtmlUI(){
   document.getElementById('green').onclick = function() {g_selectedColor = [0.0,1.0,0.0,1.0];};
@@ -107,7 +116,7 @@ function addActionForHtmlUI(){
   document.getElementById("greenSlide").addEventListener("mouseup", function() {g_selectedColor[1] = this.value/100;});
   document.getElementById("blueSlide").addEventListener("mouseup", function() {g_selectedColor[2] = this.value/100;});
 
-  document.getElementById("sizeSlide").addEventListener("mouseup", function() {g_selectedSize = this.value;});
+  document.getElementById("angleSlide").addEventListener("mouseup", function() {g_globalAngle = this.value; renderAllShapes(); });
 }
 
 function main() {
@@ -163,18 +172,25 @@ function convertCoordinatesEventToGL(ev){
 function renderAllShapes(){
   // Clear <canvas>
   var startTime = performance.now();
+  
+  var globalRotMat  = new Matrix4().rotate(g_globalAngle,0,1,0);
+  gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
+  
   gl.clear(gl.COLOR_BUFFER_BIT);
   
-  drawTriangle3D([-1.0,0.0,0.0, -0.5,-1.0,0.0, 0.0,0.0,0.0])
-  var body = new Cube();
-  body.color = [0.0,1.0,0.0,1.0];
-  body.render();
+  gl.enable(gl.CULL_FACE);
+  gl.cullFace(gl.BACK);
   
-  var body = new Cube();
-  body.color = [0.0,0.0,1.0,1.0];
-  body.matrix.translate(-0.25, -0.5, 0.0);
-  body.matrix.scale(0.5, 1, 0.5);
-  body.render();
+  // drawTriangle3D([-1.0,0.0,0.0, -0.5,-1.0,0.0, 0.0,0.0,0.0])
+  // var body = new Cube();
+  // body.color = [0.0,1.0,0.0,1.0];
+  // body.render();
+  
+  // var body = new Cube();
+  // body.color = [0.0,0.0,1.0,1.0];
+  // body.matrix.translate(-0.25, -0.5, 0.0);
+  // body.matrix.scale(0.5, 1, 0.5);
+  // body.render();
   
   var leftArm = new Cube();
   leftArm.color = [1,1,0,1];
@@ -184,7 +200,8 @@ function renderAllShapes(){
   leftArm.render();
   
   var duration = performance.now() - startTime;
-  sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration));
+  sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
+
 }
 
 function sendTextToHTML(text, htmlID){
