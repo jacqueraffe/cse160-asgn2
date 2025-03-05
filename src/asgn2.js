@@ -88,8 +88,7 @@ function connectVariablesToGLSL(){
 }
 
 let g_globalAngle = 0;
-let g_yellowAngle = 0;
-let g_magentaAngle = 0;
+let g_debugAngle = 0;
 let g_yellowAnimation = false;
 
 function addActionForHtmlUI(){
@@ -97,9 +96,7 @@ function addActionForHtmlUI(){
   document.getElementById("animationYellowOnButton").onclick = function(){g_yellowAnimation = true;}
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
-  document.getElementById("yellowSlide").addEventListener("mousemove", function() {g_yellowAngle = this.value; renderAllShapes(); });
-  document.getElementById("magentaSlide").addEventListener("mousemove", function() {g_magentaAngle = this.value; renderAllShapes(); });
-
+  document.getElementById("debugSlide").addEventListener("mousemove", function() {g_debugAngle = this.value; renderAllShapes(); });
 }
 
 function main() {
@@ -141,50 +138,115 @@ function renderAllShapes(){
   gl.enable(gl.DEPTH_TEST);
   
   var head = new Sphere(20,20);
-  head.color = [222/256, 184/256, 135/256, 1.0];
-  head.matrix.scale(0.2, 0.17, 0.2);
-  head.matrix.translate(-1, 2, 0, 2);
+  head.color = [160/256, 90/256, 40/256, 1.0];
+  head.matrix.scale(0.17, 0.13, 0.14);
+  head.matrix.translate(-0.5, 2, 0, 0);
+  head.matrix.rotate(g_debugAngle, 0, 1, 0);
   head.render();
   
-  var snout = new Sphere(10,10);
-  snout.color = [222/256, 184/256, 135/256, 1.0];
-  snout.matrix.scale(0.2, 0.1, 0.1);
-  snout.matrix.translate(-1, 2, 0, 2);
-  snout.render();
+  var leftEar = new Sphere(20,20, head);
+  leftEar.startLongitude = 0;
+  leftEar.endLongitude = Math.PI;
+  leftEar.initSphere();
+  leftEar.color = [160/256, 90/256, 40/256, 1.0];
+  leftEar.matrix.scale(0.3, 0.3, 0.3);
+  leftEar.matrix.translate(4, -2, -1, 0);
+  leftEar.matrix.rotate(90, 1, 0, 0);
+  gl.cullFace(gl.FRONT);
+  leftEar.color = [255/256, 190/256, 203/256, 1.0];
+  leftEar.render();
+  gl.cullFace(gl.BACK);
+  gl.disable(gl.CULL_FACE);
+  leftEar.matrix.scale(1.2, 1.2, 1.2);
+  leftEar.color = [160/256, 90/256, 40/256, 1.0];
+  leftEar.render();
+  gl.enable(gl.CULL_FACE);
+  
+  var rightEar = new Sphere(20,20, head);
+  rightEar.startLongitude = 0;
+  rightEar.endLongitude = Math.PI;
+  rightEar.initSphere();
+  rightEar.color = [160/256, 90/256, 40/256, 1.0];
+  rightEar.matrix.scale(0.3, 0.3, 0.3);
+  rightEar.matrix.translate(-4, -2, -1, 0);
+  rightEar.matrix.rotate(90, 1, 0, 0);
+  gl.cullFace(gl.FRONT);
+  rightEar.color = [255/256, 190/256, 203/256, 1.0];
+  rightEar.render();
+  gl.cullFace(gl.BACK);
+  gl.disable(gl.CULL_FACE);
+  rightEar.matrix.scale(1.2, 1.2, 1.2);
+  rightEar.color = [160/256, 90/256, 40/256, 1.0];
+  rightEar.render();
+  gl.enable(gl.CULL_FACE);
+  
+  
+  
+
+  var rightEye = new Sphere(20,20, head);
+  rightEye.color =  [10/256, 10/256, 10/256, 1.0];
+  rightEye.matrix.scale(0.175, 0.175, 0.175);
+  rightEye.matrix.translate(3.5, -2, -4, 0);
+  rightEye.render();
+  var rightEyeSparkle = new Sphere(20,20, rightEye);
+  rightEyeSparkle.color =  [1, 1, 1, 1.0];
+  rightEyeSparkle.matrix.scale(0.175, 0.175, 0.175);
+  rightEyeSparkle.matrix.translate(3.5, -1, -5, 0);
+  rightEyeSparkle.render();
+  
+  var leftEye = new Sphere(20,20, head);
+  leftEye.color =  [10/256, 10/256, 10/256, 1.0];
+  leftEye.matrix.scale(0.175, 0.175, 0.175);
+  leftEye.matrix.translate(-4.1, -1.9, -4, 0);
+  leftEye.render();
+  
+  var leftEyeSparkle = new Sphere(20,20, leftEye);
+  leftEyeSparkle.color =  [1, 1, 1, 1.0];
+  leftEyeSparkle.matrix.scale(0.175, 0.175, 0.175);
+  leftEyeSparkle.matrix.translate(-3, 0, -5, 0);
+  leftEyeSparkle.render();
+  
+  var snoutUpper = new Sphere(10, 10, head);
+  snoutUpper.color =  [160/256, 90/256, 40/256, 1.0];
+  snoutUpper.matrix.scale(1.1, 0.5, 0.55);
+  snoutUpper.matrix.translate(0, -1.75, -1.5, 0);
+  snoutUpper.render();
+  
+  var snoutLower = new Sphere(10, 10, snoutUpper);
+  snoutLower.color =  [150/256, 80/256, 30/256, 1.0];
+  snoutLower.matrix.scale(0.8, 0.8, 0.8);
+  snoutLower.matrix.translate(0, -0.5, 0, 0);
+  snoutLower.render();
   
 var body = new Cube();
-body.color = [222/256, 184/256, 135/256, 1.0];
-body.matrix.rotate(-10, 1, 15, 1);
-body.matrix.scale(0.5, 0.3, 0.3);
-body.render();
+body.color = [170/256, 100/256, 50/256, 1.0];
 
-var frontLeftLeg = new Cube();
-frontLeftLeg.color = [222/256, 184/256, 135/256, 1.0];
-frontLeftLeg.matrix.rotate(-10, 1, 15, 1);
+body.matrix.rotate(-30, 1, 35, 1);
+body.matrix.translate(-0.05, 0.0, -0.05, 0);
+
+
+
+var frontLeftLeg = body;
 frontLeftLeg.matrix.scale(0.05, 0.3, 0.05);
 frontLeftLeg.matrix.translate(0, -1.0, 0.0, 0);
 frontLeftLeg.render();
 
-var frontRightLeg = new Cube();
-frontRightLeg.color = [222/256, 184/256, 135/256, 1.0];
-frontRightLeg.matrix.rotate(-10, 1, 15, 1);
-frontRightLeg.matrix.scale(0.05, 0.3, 0.05);
-frontRightLeg.matrix.translate(0, -1.0, 5.0, 0);
+var frontRightLeg = body;
+frontRightLeg.matrix.translate(0, 0, 5.0, 0);
 frontRightLeg.render();
   
-var backLeftLeg = new Cube();
-backLeftLeg.color = [222/256, 184/256, 135/256, 1.0];
-backLeftLeg.matrix.rotate(-10, 1, 15, 1);
-backLeftLeg.matrix.scale(0.05, 0.3, 0.05);
-backLeftLeg.matrix.translate(9, -1.0, 0.0, 0);
+var backRightLeg = body;
+backRightLeg.matrix.translate(9, 0, 0.0, 0);
+backRightLeg.render();
+
+var backLeftLeg = body;
+backLeftLeg.matrix.translate(0, 0, -5.0, 0);
 backLeftLeg.render();
 
-var backRightLeg = new Cube();
-backRightLeg.color = [222/256, 184/256, 135/256, 1.0];
-backRightLeg.matrix.rotate(-10, 1, 15, 1);
-backRightLeg.matrix.scale(0.05, 0.3, 0.05);
-backRightLeg.matrix.translate(9, -1.0, 5.0, 0);
-backRightLeg.render();
+body.matrix.scale(10, 0.875, 6);
+body.matrix.translate(-0.9, 0.75, 0, 0);
+body.render();
+
   
   var duration = performance.now() - startTime;
   sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
