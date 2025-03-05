@@ -89,6 +89,7 @@ function connectVariablesToGLSL(){
 
 let g_globalAngle = 0;
 let g_debugAngle = 0;
+let g_legBendAngle = 0; // use for leg floating animation
 let g_yellowAnimation = false;
 
 function addActionForHtmlUI(){
@@ -96,7 +97,7 @@ function addActionForHtmlUI(){
   document.getElementById("animationYellowOnButton").onclick = function(){g_yellowAnimation = true;}
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
-  document.getElementById("debugSlide").addEventListener("mousemove", function() {g_debugAngle = this.value; renderAllShapes(); });
+  document.getElementById("legBendSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; renderAllShapes(); });
 }
 
 function main() {
@@ -120,7 +121,7 @@ function tick() {
 
 function updateAnimationAngles(){
   if(g_yellowAnimation){
-    g_yellowAngle = 45*Math.sin(g_seconds);
+    g_legBendAngle = 45*Math.sin(g_seconds);
   }
 }
 
@@ -137,11 +138,19 @@ function renderAllShapes(){
   gl.cullFace(gl.BACK);
   gl.enable(gl.DEPTH_TEST);
   
+  var body = new Box(0.5, 0.3, 0.25);
+  body.color = [170/256, 100/256, 50/256, 1.0];
+  body.matrix.rotate(-20, 1, 35, 1);
+  body.matrix.translate(0, -0.35, 0, 0);
+  var base = new Matrix4(body.matrix);
+  body.render();
+  
   var head = new Sphere(20,20);
+  head.matrix = new Matrix4(base);
   head.color = [160/256, 90/256, 40/256, 1.0];
   head.matrix.scale(0.17, 0.13, 0.14);
-  head.matrix.translate(-0.5, 2, 0, 0);
-  head.matrix.rotate(g_debugAngle, 0, 1, 0);
+  head.matrix.translate(-0.5, 3, 0.5, 0);
+  head.matrix.rotate(30, 0, 1, 0);
   head.render();
   
   var leftEar = new Sphere(20,20, head);
@@ -207,50 +216,36 @@ function renderAllShapes(){
   leftEyeSparkle.render();
   
   var snoutUpper = new Sphere(10, 10, head);
-  snoutUpper.color =  [160/256, 90/256, 40/256, 1.0];
+  snoutUpper.color =  [190/256, 110/256, 70/256, 1.0];
   snoutUpper.matrix.scale(1.1, 0.5, 0.55);
   snoutUpper.matrix.translate(0, -1.75, -1.5, 0);
   snoutUpper.render();
   
   var snoutLower = new Sphere(10, 10, snoutUpper);
-  snoutLower.color =  [150/256, 80/256, 30/256, 1.0];
+  snoutLower.color =  [175/256, 95/256, 55/256, 1.0];
   snoutLower.matrix.scale(0.8, 0.8, 0.8);
   snoutLower.matrix.translate(0, -0.5, 0, 0);
   snoutLower.render();
-  
-var body = new Cube();
-body.color = [170/256, 100/256, 50/256, 1.0];
-
-body.matrix.rotate(-30, 1, 35, 1);
-body.matrix.translate(-0.05, 0.0, -0.05, 0);
 
 
+var frontLeftUpperLeg = new Box(0.05, 0.15, 0.05);
+frontLeftUpperLeg.matrix = new Matrix4(base);
+frontLeftUpperLeg.color = [170/256, 100/256, 50/256, 1.0];
+frontLeftUpperLeg.matrix.translate(-0.22, -0.225, -0.1, 0);
+rotateHelper(frontLeftUpperLeg.matrix, 0, 0.0725, 0, -g_legBendAngle, 0, 0, 1);
+frontLeftUpperLeg.render();
 
-var frontLeftLeg = body;
-frontLeftLeg.matrix.scale(0.05, 0.3, 0.05);
-frontLeftLeg.matrix.translate(0, -1.0, 0.0, 0);
-frontLeftLeg.render();
-
-var frontRightLeg = body;
-frontRightLeg.matrix.translate(0, 0, 5.0, 0);
-frontRightLeg.render();
-  
-var backRightLeg = body;
-backRightLeg.matrix.translate(9, 0, 0.0, 0);
-backRightLeg.render();
-
-var backLeftLeg = body;
-backLeftLeg.matrix.translate(0, 0, -5.0, 0);
-backLeftLeg.render();
-
-body.matrix.scale(10, 0.875, 6);
-body.matrix.translate(-0.9, 0.75, 0, 0);
-body.render();
 
   
   var duration = performance.now() - startTime;
   sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
 
+}
+
+function rotateHelper(matrix, tx, ty, tz, angle, ax, ay, az){
+  matrix.translate(tx, ty, tz);
+  matrix.rotate(angle, ax, ay, az);
+  matrix.translate(-tx, -ty, -tz);
 }
 
 function sendTextToHTML(text, htmlID){
