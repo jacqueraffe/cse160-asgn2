@@ -106,7 +106,7 @@ function addActionForHtmlUI(){
   document.getElementById("animationYellowOffButton").onclick = function(){g_yellowAnimation = false;}
   document.getElementById("animationYellowOnButton").onclick = function(){g_yellowAnimation = true; g_startTime =  performance.now()/1000.0; }
   
-  document.getElementById("resetCowButton").onclick = function(){g_modelAngleX = 0; g_modelAngleY = 0; g_jumpX = 0; g_jumpHeight = 0; renderAllShapes();}
+  document.getElementById("resetCowButton").onclick = function(){resetCow();  renderAllShapes();}
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
   document.getElementById("hopSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; g_jumpHeight = this.value/70; renderAllShapes(); });
@@ -118,6 +118,9 @@ function addActionForHtmlUI(){
   document.getElementById("webgl").addEventListener('click', function(event) {
     if (event.shiftKey) {
       g_moonAnimation = !g_moonAnimation;
+      var trueState = g_moonAnimation;
+      resetCow();
+      g_moonAnimation = trueState;
     } else {
       const rect = canvas.getBoundingClientRect();
       g_modelAngleX = (event.clientX - rect.left)/(rect.right - rect.left)*360-180;
@@ -125,6 +128,15 @@ function addActionForHtmlUI(){
     }
   });
   
+}
+
+function resetCow(){
+  g_modelAngleX = 0; 
+  g_modelAngleY = 0; 
+  g_jumpX = 0; 
+  g_jumpHeight = 0;
+  g_yellowAnimation = false;
+  g_moonAnimation = false;
 }
 
 function main() {
