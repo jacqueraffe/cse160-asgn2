@@ -140,12 +140,17 @@ function renderAllShapes(){
   gl.cullFace(gl.BACK);
   gl.enable(gl.DEPTH_TEST);
   
-  
-  var head = new Sphere(40,40);
+  var head = new Sphere(20,20);
   head.color = [222/256, 184/256, 135/256, 1.0];
-  head.matrix.scale(0.2, 0.1, 0.1);
-  head.matrix.translate(-2, 2, 0, 2);
+  head.matrix.scale(0.2, 0.17, 0.2);
+  head.matrix.translate(-1, 2, 0, 2);
   head.render();
+  
+  var snout = new Sphere(10,10);
+  snout.color = [222/256, 184/256, 135/256, 1.0];
+  snout.matrix.scale(0.2, 0.1, 0.1);
+  snout.matrix.translate(-1, 2, 0, 2);
+  snout.render();
   
 var body = new Cube();
 body.color = [222/256, 184/256, 135/256, 1.0];
