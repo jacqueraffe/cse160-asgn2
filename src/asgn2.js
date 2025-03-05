@@ -383,21 +383,10 @@ tailHair.color = [40/256, 40/256, 40/256, 1.0];
 tailHair.matrix.translate(0, -0.15, 0, 0);
 rotateHelper(tailHair.matrix, 0, 0.075, 0, 0.8*g_legBendAngle, 0, 0, 1);
 tailHair.render();
-
-
-
-  
   var duration = performance.now() - startTime;
   sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
 
 }
-
-// TODO:
-/*
-head slider
-tail slider, second tail slider
-shift click second animation
-*/
 
 function rotateHelper(matrix, tx, ty, tz, angle, ax, ay, az){
   matrix.translate(tx, ty, tz);
