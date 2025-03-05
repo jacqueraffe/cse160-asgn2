@@ -7,10 +7,10 @@
 
 // NOTE FOR GRADER:
 // # cse160-asgn1
-// heavily referenced video playlist.
+// heavily referenced video playlist. and used Gemini
 
 // Awesomeness:
-// I added a garden brushes. So there is a flower and grass brush to use. The grass is always green and draws straight downwards. The flower has four petals, and you can change the colors of the petals, but the center is always yellow.
+// shift click to jump over the moon
 
 
 var VSHADER_SOURCE =`
@@ -93,16 +93,20 @@ let g_globalAngle = 0;
 let g_debugAngle = 0;
 let g_legBendAngle = 0; // use for leg floating animation
 let g_yellowAnimation = false;
+let g_moonAnimation = true;
 let g_jumpHeight = 0;
 let g_modelAngleX = 0;
 let g_modelAngleY = 0;
 let g_headAngle = 0;
 let g_firstTailJointAngle = 0;
 let g_secondTailJointAngle = 0;
+let g_jumpX = 0;
 
 function addActionForHtmlUI(){
   document.getElementById("animationYellowOffButton").onclick = function(){g_yellowAnimation = false;}
   document.getElementById("animationYellowOnButton").onclick = function(){g_yellowAnimation = true; g_startTime =  performance.now()/1000.0; }
+  
+  document.getElementById("resetCowButton").onclick = function(){g_modelAngleX = 0; g_modelAngleY = 0; g_jumpX = 0; g_jumpHeight = 0; renderAllShapes();}
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
   document.getElementById("hopSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; g_jumpHeight = this.value/70; renderAllShapes(); });
@@ -112,19 +116,22 @@ function addActionForHtmlUI(){
 
   
   document.getElementById("webgl").addEventListener('click', function(event) {
-    const rect = canvas.getBoundingClientRect();
-    g_modelAngleX = (event.clientX - rect.left)/(rect.right - rect.left)*360-180;
-    g_modelAngleY = (event.clientY - rect.top)/(rect.bottom-rect.top)*360-180;
+    if (event.shiftKey) {
+      g_moonAnimation = !g_moonAnimation;
+    } else {
+      const rect = canvas.getBoundingClientRect();
+      g_modelAngleX = (event.clientX - rect.left)/(rect.right - rect.left)*360-180;
+      g_modelAngleY = (event.clientY - rect.top)/(rect.bottom-rect.top)*360-180;
+    }
   });
+  
 }
-
-
 
 function main() {
   setupWebGL();
+  setUpShapes();
   connectVariablesToGLSL();
   addActionForHtmlUI();
-  gl.clearColor(144/255, 238/255, 144/255, 1);
   requestAnimationFrame(tick);
 }
 
@@ -133,7 +140,6 @@ var g_seconds = performance.now()/1000.0-g_startTime;
 
 function tick() {
   g_seconds = performance.now()/1000.0-g_startTime;
-  console.log(g_seconds);
   updateAnimationAngles();
   renderAllShapes();
   requestAnimationFrame(tick);
@@ -146,7 +152,30 @@ function updateAnimationAngles(){
     var angle = Math.PI*2*u;
     g_legBendAngle = (45+45*Math.sin(angle))/1.5;
     g_jumpHeight = -4*u*(u - 1);
+  } else if (g_moonAnimation){
+    var duration = 3;
+    var u = (g_seconds%duration)/duration;
+    var angle = Math.PI*2*u;
+    g_legBendAngle = (45+45*Math.sin(angle))/1.5;
+    g_jumpHeight = -4*u*(u - 1);
+    g_jumpX = lerp(u, 3, -2);
   }
+}
+
+function lerp(u, a, b){
+  return u*b+(1-u)*a;
+}
+
+var g_moon;
+
+function setUpShapes(){
+    g_moon = new Sphere(30, 30);
+    g_moon.startLongitude = 0;
+    g_moon.endLongitude = Math.PI;
+    g_moon.initSphere();
+    g_moon.color = [1.0, 1.0, 0.85, 1.0];
+    g_moon.matrix.translate(0, -3.5, 1, 0);
+    g_moon.matrix.scale(3, 3, 0.1);
 }
 
 function renderAllShapes(){
@@ -156,11 +185,20 @@ function renderAllShapes(){
   var globalRotMat  = new Matrix4().rotate(g_globalAngle,0,1,0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
   
+  if (g_moonAnimation){
+    gl.clearColor(0, 0, 0, 1);
+  } else{
+    gl.clearColor(144/255, 238/255, 144/255, 1);
+  }
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
   gl.enable(gl.CULL_FACE);
   gl.cullFace(gl.BACK);
   gl.enable(gl.DEPTH_TEST);
+  
+  if (g_moonAnimation){
+    g_moon.render();
+  }
   
   var body = new Box(0.5, 0.3, 0.25);
   body.color = [170/256, 100/256, 50/256, 1.0];
@@ -168,7 +206,7 @@ function renderAllShapes(){
   body.matrix.rotate(g_modelAngleX, 1, 0, 0);
   body.matrix.rotate(g_modelAngleY, 0, 1, 0);
   body.matrix.translate(0, -0.35, 0, 0);
-  body.matrix.translate(0, g_jumpHeight/3, 0, 0);
+  body.matrix.translate(g_jumpX, g_jumpHeight/3, 0, 0);
   var base = new Matrix4(body.matrix);
   body.render();
   
