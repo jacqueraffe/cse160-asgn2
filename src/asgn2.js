@@ -49,6 +49,8 @@ function setupWebGL(){
     }
 }
 
+
+
 function connectVariablesToGLSL(){
    // Initialize shaders
    if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
@@ -92,6 +94,8 @@ let g_debugAngle = 0;
 let g_legBendAngle = 0; // use for leg floating animation
 let g_yellowAnimation = false;
 let g_jumpHeight = 0;
+let g_modelAngleX = 0;
+let g_modelAngleY = 0;
 
 function addActionForHtmlUI(){
   document.getElementById("animationYellowOffButton").onclick = function(){g_yellowAnimation = false;}
@@ -99,7 +103,15 @@ function addActionForHtmlUI(){
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
   document.getElementById("hopSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; g_jumpHeight = this.value/70; renderAllShapes(); });
+
+  document.getElementById("webgl").addEventListener('click', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    g_modelAngleX = (event.clientX - rect.left)/(rect.right - rect.left)*360-180;
+    g_modelAngleY = (event.clientY - rect.top)/(rect.bottom-rect.top)*360-180;
+  });
 }
+
+
 
 function main() {
   setupWebGL();
@@ -146,6 +158,8 @@ function renderAllShapes(){
   var body = new Box(0.5, 0.3, 0.25);
   body.color = [170/256, 100/256, 50/256, 1.0];
   body.matrix.rotate(-20, 1, 35, 1);
+  body.matrix.rotate(g_modelAngleX, 1, 0, 0);
+  body.matrix.rotate(g_modelAngleY, 0, 1, 0);
   body.matrix.translate(0, -0.35, 0, 0);
   body.matrix.translate(0, g_jumpHeight/3, 0, 0);
   var base = new Matrix4(body.matrix);
