@@ -159,6 +159,26 @@ function renderAllShapes(){
   head.matrix.rotate(30, 0, 1, 0);
   head.render();
   
+  var leftHorn = new Cone(0, 0.3, 1, 32);
+  leftHorn.matrix = new Matrix4(head.matrix);
+  leftHorn.color = [255/255, 240/255, 102/256, 1.0];
+  leftHorn.matrix.translate(1.4, 0, -0.6, 0);
+  rotateHelper(leftHorn.matrix, 0, 0.3, 0, 90, 0, 0, 1);
+  rotateHelper(leftHorn.matrix, 0, 0.3, 0, -140, 1, 0, 0);
+  gl.cullFace(gl.FRONT);// cone renders inside out, easiest to fix like this
+  leftHorn.render();
+  gl.cullFace(gl.BACK);
+  
+  var rightHorn = new Cone(0, 0.3, 1, 32);
+  rightHorn.matrix = new Matrix4(head.matrix);
+  rightHorn.color = [255/255, 240/255, 102/256, 1.0];
+  rightHorn.matrix.translate(-1.2, 0, -0.6, 0);
+  rotateHelper(rightHorn.matrix, 0, 0.3, 0, 90, 0, 0, 1);
+  rotateHelper(rightHorn.matrix, 0, 0.3, 0, -70, 1, 0, 0);
+  gl.cullFace(gl.FRONT);// cone renders inside out, easiest to fix like this
+  rightHorn.render();
+  gl.cullFace(gl.BACK);
+  
   var leftEar = new Sphere(20,20, head);
   leftEar.startLongitude = 0;
   leftEar.endLongitude = Math.PI;
@@ -348,6 +368,14 @@ tailHair.render();
   sendTextToHTML( " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
 
 }
+
+// TODO:
+/*
+head slider
+tail slider, second tail slider
+add mouse click rotation
+shift click second animation
+*/
 
 function rotateHelper(matrix, tx, ty, tz, angle, ax, ay, az){
   matrix.translate(tx, ty, tz);
