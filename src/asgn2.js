@@ -96,6 +96,9 @@ let g_yellowAnimation = false;
 let g_jumpHeight = 0;
 let g_modelAngleX = 0;
 let g_modelAngleY = 0;
+let g_headAngle = 0;
+let g_firstTailJointAngle = 0;
+let g_secondTailJointAngle = 0;
 
 function addActionForHtmlUI(){
   document.getElementById("animationYellowOffButton").onclick = function(){g_yellowAnimation = false;}
@@ -103,7 +106,11 @@ function addActionForHtmlUI(){
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
   document.getElementById("hopSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; g_jumpHeight = this.value/70; renderAllShapes(); });
+  document.getElementById("headRotationSlide").addEventListener("mousemove", function() {g_headAngle = this.value; renderAllShapes(); });
+  document.getElementById("firstTailJointRotationSlide").addEventListener("mousemove", function() {g_firstTailJointAngle = this.value; renderAllShapes(); });
+  document.getElementById("secondTailJointRotationSlide").addEventListener("mousemove", function() {g_secondTailJointAngle = this.value; renderAllShapes(); });
 
+  
   document.getElementById("webgl").addEventListener('click', function(event) {
     const rect = canvas.getBoundingClientRect();
     g_modelAngleX = (event.clientX - rect.left)/(rect.right - rect.left)*360-180;
@@ -171,6 +178,7 @@ function renderAllShapes(){
   head.matrix.scale(0.17, 0.13, 0.14);
   head.matrix.translate(-1.2, 2, -0.5, 0);
   head.matrix.rotate(30, 0, 1, 0);
+  head.matrix.rotate(g_headAngle, 0, 1, 0);
   head.render();
   
   var leftHorn = new Cone(0, 0.3, 1, 32);
@@ -359,13 +367,14 @@ tailUpper.matrix = new Matrix4(base);
 tailUpper.color = [170/256, 100/256, 50/256, 1.0];
 tailUpper.matrix.translate(0.275, 0.05, 0, 0);
 rotateHelper(tailUpper.matrix, 0, 0.0725, 0, 2.6*g_legBendAngle, 0, 0, 1);
+rotateHelper(tailUpper.matrix, 0, 0.0725, 0, g_firstTailJointAngle, 0, 0, 1);
 tailUpper.render();
 
 var tailLower = new Box(0.025, 0.15, 0.025);
 tailLower.matrix = new Matrix4(tailUpper.matrix);
 tailLower.color = [170/256, 100/256, 50/256, 1.0];
-tailLower.matrix.translate(0, -0.1, 0, 0);
-//rotateHelper(tailLower.matrix, 0, 0.0725, 0, 2*g_legBendAngle, 0, 0, 1);
+tailLower.matrix.translate(0, -0.15, 0, 0);
+rotateHelper(tailLower.matrix, 0, 0.0725, 0, g_secondTailJointAngle, 0, 0, 1);
 tailLower.render();
 
 var tailHair = new Box(0.025, 0.15, 0.025);
@@ -387,7 +396,6 @@ tailHair.render();
 /*
 head slider
 tail slider, second tail slider
-add mouse click rotation
 shift click second animation
 */
 
