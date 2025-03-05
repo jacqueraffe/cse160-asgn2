@@ -149,7 +149,7 @@ function renderAllShapes(){
   head.matrix = new Matrix4(base);
   head.color = [160/256, 90/256, 40/256, 1.0];
   head.matrix.scale(0.17, 0.13, 0.14);
-  head.matrix.translate(-0.5, 3, 0.5, 0);
+  head.matrix.translate(-1.2, 2, -0.5, 0);
   head.matrix.rotate(30, 0, 1, 0);
   head.render();
   
@@ -188,9 +188,6 @@ function renderAllShapes(){
   rightEar.color = [160/256, 90/256, 40/256, 1.0];
   rightEar.render();
   gl.enable(gl.CULL_FACE);
-  
-  
-  
 
   var rightEye = new Sphere(20,20, head);
   rightEye.color =  [10/256, 10/256, 10/256, 1.0];
@@ -222,18 +219,100 @@ function renderAllShapes(){
   snoutUpper.render();
   
   var snoutLower = new Sphere(10, 10, snoutUpper);
-  snoutLower.color =  [175/256, 95/256, 55/256, 1.0];
+  snoutLower.color =  [125/256, 65/256, 45/256, 1.0];
   snoutLower.matrix.scale(0.8, 0.8, 0.8);
   snoutLower.matrix.translate(0, -0.5, 0, 0);
   snoutLower.render();
 
-
+// Front Left
 var frontLeftUpperLeg = new Box(0.05, 0.15, 0.05);
 frontLeftUpperLeg.matrix = new Matrix4(base);
 frontLeftUpperLeg.color = [170/256, 100/256, 50/256, 1.0];
 frontLeftUpperLeg.matrix.translate(-0.22, -0.225, -0.1, 0);
 rotateHelper(frontLeftUpperLeg.matrix, 0, 0.0725, 0, -g_legBendAngle, 0, 0, 1);
 frontLeftUpperLeg.render();
+
+var frontLeftBottomLeg = new Box(0.05, 0.15, 0.05);
+frontLeftBottomLeg.matrix = new Matrix4(frontLeftUpperLeg.matrix);
+frontLeftBottomLeg.color = [170/256, 100/256, 50/256, 1.0];
+frontLeftBottomLeg.matrix.translate(0, -0.15, 0, 0);
+rotateHelper(frontLeftBottomLeg.matrix, 0, 0.0725, 0, 2*g_legBendAngle, 0, 0, 1);
+frontLeftBottomLeg.render();
+
+var frontLeftHoof = new Box(0.05, 0.05, 0.05);
+frontLeftHoof.matrix = new Matrix4(frontLeftBottomLeg.matrix);
+frontLeftHoof.color = [150/256, 150/256, 150/256, 1.0];
+frontLeftHoof.matrix.translate(0, -0.1, 0, 0);
+rotateHelper(frontLeftHoof.matrix, 0, 0.025, 0, g_legBendAngle, 0, 0, 1);
+frontLeftHoof.render();
+
+// Front Right
+var frontRightUpperLeg = new Box(0.05, 0.15, 0.05);
+frontRightUpperLeg.matrix = new Matrix4(base);
+frontRightUpperLeg.color = [170/256, 100/256, 50/256, 1.0];
+frontRightUpperLeg.matrix.translate(-0.22, -0.225, 0.1, 0);
+rotateHelper(frontRightUpperLeg.matrix, 0, 0.0725, 0, -0.8*g_legBendAngle, 0, 0, 1);
+frontRightUpperLeg.render();
+
+var frontRightBottomLeg = new Box(0.05, 0.15, 0.05);
+frontRightBottomLeg.matrix = new Matrix4(frontRightUpperLeg.matrix);
+frontRightBottomLeg.color = [170/256, 100/256, 50/256, 1.0];
+frontRightBottomLeg.matrix.translate(0, -0.15, 0, 0);
+rotateHelper(frontRightBottomLeg.matrix, 0, 0.0725, 0, 1.6*g_legBendAngle, 0, 0, 1);
+frontRightBottomLeg.render();
+
+var frontRightHoof = new Box(0.05, 0.05, 0.05);
+frontRightHoof.matrix = new Matrix4(frontRightBottomLeg.matrix);
+frontRightHoof.color = [150/256, 150/256, 150/256, 1.0];
+frontRightHoof.matrix.translate(0, -0.1, 0, 0);
+rotateHelper(frontRightHoof.matrix, 0, 0.025, 0, 0.8*g_legBendAngle, 0, 0, 1);
+frontRightHoof.render();
+
+// Back Left
+var backLeftUpperLeg = new Box(0.05, 0.15, 0.05);
+backLeftUpperLeg.matrix = new Matrix4(base);
+backLeftUpperLeg.color = [170/256, 100/256, 50/256, 1.0];
+backLeftUpperLeg.matrix.translate(0.22, -0.225, -0.1, 0);
+rotateHelper(backLeftUpperLeg.matrix, 0, 0.0725, 0, -g_legBendAngle, 0, 0, 1);
+backLeftUpperLeg.render();
+
+var backLeftBottomLeg = new Box(0.05, 0.15, 0.05);
+backLeftBottomLeg.matrix = new Matrix4(backLeftUpperLeg.matrix);
+backLeftBottomLeg.color = [170/256, 100/256, 50/256, 1.0];
+backLeftBottomLeg.matrix.translate(0, -0.15, 0, 0);
+rotateHelper(backLeftBottomLeg.matrix, 0, 0.0725, 0, 2*g_legBendAngle, 0, 0, 1);
+backLeftBottomLeg.render();
+
+var backLeftHoof = new Box(0.05, 0.05, 0.05);
+backLeftHoof.matrix = new Matrix4(backLeftBottomLeg.matrix);
+backLeftHoof.color = [150/256, 150/256, 150/256, 1.0];
+backLeftHoof.matrix.translate(0, -0.1, 0, 0);
+rotateHelper(backLeftHoof.matrix, 0, 0.025, 0, g_legBendAngle, 0, 0, 1);
+backLeftHoof.render();
+
+// Back Right
+var backRightUpperLeg = new Box(0.05, 0.15, 0.05);
+backRightUpperLeg.matrix = new Matrix4(base);
+backRightUpperLeg.color = [170/256, 100/256, 50/256, 1.0];
+backRightUpperLeg.matrix.translate(0.22, -0.225, 0.1, 0);
+rotateHelper(backRightUpperLeg.matrix, 0, 0.0725, 0, -0.8*g_legBendAngle, 0, 0, 1);
+backRightUpperLeg.render();
+
+var backRightBottomLeg = new Box(0.05, 0.15, 0.05);
+backRightBottomLeg.matrix = new Matrix4(backRightUpperLeg.matrix);
+backRightBottomLeg.color = [170/256, 100/256, 50/256, 1.0];
+backRightBottomLeg.matrix.translate(0, -0.15, 0, 0);
+rotateHelper(backRightBottomLeg.matrix, 0, 0.0725, 0, 1.6*g_legBendAngle, 0, 0, 1);
+backRightBottomLeg.render();
+
+var backRightHoof = new Box(0.05, 0.05, 0.05);
+backRightHoof.matrix = new Matrix4(backRightBottomLeg.matrix);
+backRightHoof.color = [150/256, 150/256, 150/256, 1.0];
+backRightHoof.matrix.translate(0, -0.1, 0, 0);
+rotateHelper(backRightHoof.matrix, 0, 0.025, 0, 0.8*g_legBendAngle, 0, 0, 1);
+backRightHoof.render();
+
+
 
 
   
