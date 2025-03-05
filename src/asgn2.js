@@ -91,13 +91,14 @@ let g_globalAngle = 0;
 let g_debugAngle = 0;
 let g_legBendAngle = 0; // use for leg floating animation
 let g_yellowAnimation = false;
+let g_jumpHeight = 0;
 
 function addActionForHtmlUI(){
   document.getElementById("animationYellowOffButton").onclick = function(){g_yellowAnimation = false;}
-  document.getElementById("animationYellowOnButton").onclick = function(){g_yellowAnimation = true;}
+  document.getElementById("animationYellowOnButton").onclick = function(){g_yellowAnimation = true; g_startTime =  performance.now()/1000.0; }
 
   document.getElementById("angleSlide").addEventListener("mousemove", function() {g_globalAngle = this.value; renderAllShapes(); });
-  document.getElementById("legBendSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; renderAllShapes(); });
+  document.getElementById("hopSlide").addEventListener("mousemove", function() {g_legBendAngle = this.value; g_jumpHeight = this.value/70; renderAllShapes(); });
 }
 
 function main() {
@@ -121,7 +122,11 @@ function tick() {
 
 function updateAnimationAngles(){
   if(g_yellowAnimation){
-    g_legBendAngle = 45*Math.sin(g_seconds);
+    var duration = 1.25;
+    var u = (g_seconds%duration)/duration;
+    var angle = Math.PI*2*u;
+    g_legBendAngle = (45+45*Math.sin(angle))/1.5;
+    g_jumpHeight = -4*u*(u - 1);
   }
 }
 
@@ -142,6 +147,7 @@ function renderAllShapes(){
   body.color = [170/256, 100/256, 50/256, 1.0];
   body.matrix.rotate(-20, 1, 35, 1);
   body.matrix.translate(0, -0.35, 0, 0);
+  body.matrix.translate(0, g_jumpHeight/3, 0, 0);
   var base = new Matrix4(body.matrix);
   body.render();
   
